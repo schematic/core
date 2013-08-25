@@ -1,0 +1,14 @@
+{
+  "name": "schema-ilsken",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Christopher Tarquini",
+  "license": "MIT",
+  "dependencies": {
+    "mpath": "~0.2.1"
+  }
+}
