@@ -26,6 +26,10 @@ function ValidationError (schema, options, error) {
 			configurable: true
 		})
 	})
+
+	if (validator.options.strict && error) {
+		
+	}
 }
 
 ValidationError.prototype = Object.create(Error.prototype, {

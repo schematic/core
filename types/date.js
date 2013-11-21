@@ -1,36 +1,35 @@
-module.exports = DateType
-var Schema = require('../schema')
+var Schema = require('../lib/schema')
 var type = require('type-component')
+module.exports = 
+  Schema.extend()
+  .cast(date)
+  .rule('before', nyi)
+  .rule('after', nyi)
 
-function DateType(options, parent, path){
-	Schema.call(this, options, parent, path)
+function nyi() {
+  throw new Error('not yet implemented')
 }
 
-DateType.prototype = Object.create(Schema.prototype, {
-	constructor: {
-		value: DateType
-	}
-})
+function date(value) {
+  var value_type = type(value)
+    , ret = false
 
-DateType.prototype._cast = function(value, parent){
-	if (value === undefined || value === null || value == '') return value
-
-  if (value instanceof Date)
-    return value;
-
-  var date;
+	if (value === undefined ||
+      value === null || 
+      value === '' ||
+      value_type == 'date') 
+    return value
 
   // support for timestamps
-  if (value instanceof Number || 'number' == typeof value 
-      || String(value) == Number(value))
-    date = new Date(Number(value));
+  if (value_type == 'number' || String(value) == Number(value))
+    ret = new Date(Number(value));
 
   // support for date strings
   else if (value.toString)
-    date = new Date(value.toString());
+    ret = new Date(value.toString());
 
-  if (date.toString() != 'Invalid Date')
-    return date;
+  if (ret && ret.toString() != 'Invalid Date')
+    return ret;
 
   throw new TypeError('invalid date')
 }

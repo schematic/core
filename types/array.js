@@ -1,92 +1,66 @@
-module.exports = ArrayType
-var Schema = require('../schema')
-var Mixed = require('./mixed')
-var type = require('type-component')
-var CastItemsError = require('../errors/items')
-var ValidationError = require('../errors/validation')
-var ValidatorError = require('../errors/validator')
+var Schema = require('../lib/schema')
+var ItemCastError = require('../errors/items')
 var ItemValidationError = require('../errors/items-validation')
-var caster = require('../lib/caster').caster
-var each = require('each-component')
-var slice = [].slice
-var cast = Schema.prototype._cast
 
-function ArrayType(options, parent, path){
-	Schema.call(this, options, parent, path)
-	this.options.items = Schema.getType(null, this.options.items, this)
-	
+exports = module.exports = Schema.extend()
+exports
+  .cast(array)
+  .rule('items', items)
+
+function array(value, parent) {
+  if (value === null || value === undefined) return value;
+  var type = this.options.items
+    , parent_enabled = this.options.parent
+    , parent_key = typeof parent_enabled === 'string' ? parent_enabled : 'parent'
+
+  if (Array.isArray(value) || isArrayLike(value)) {
+    if (parent_enabled)
+      value[parent_key] = parent
+    return type && type.cast ? cast_items(value, type) : value
+  }
+
+  throw new TypeError('must be an array or array-like object')
 }
 
-ArrayType.prototype = Object.create(Schema.prototype, {
-	constructor: {
-		value: ArrayType
-	}
-})
-ArrayType.prototype.name = 'Array'
-ArrayType.prototype.items = function (type, value, parent) {
-	if (value === null || value === undefined) return value
-	var errors = new ItemValidationError(this, type)
-	var hasErrors = false
-	for (var i = 0; i < value.length; i++) {
-		var result = type.validate(value[i], value)
-		value[i] = result.value
-		if(result.error){
-			errors.add(i, result.error)
-			hasErrors = true
-		}
-	}
-	
-	if(hasErrors){
-		throw errors
-	}
-	return value
+function cast_items(value, type) {
+  var ret = []
+    , errors = []
+
+  for (var i = 0; i < ret.length; i++) {
+    try {
+      ret[i] = type.cast(value[i], ret)
+    } catch(err) {
+      errors[i] = err
+    }
+  }
+
+  if (errors.length > 0)
+    throw new ItemCastError(type, errors)
+
+  return ret
 }
 
-ArrayType.prototype._validate = function(value, parent, target) {
-	var errors = new ValidationError(this)
-		, hasErrors = false
-		, options = this.options
-		, path = this._path
-		, self = this
+function items(value, type, done) {
+  if (value === null || value === undefined || value.length === 0) {
+    done()
+    return
+  }
 
-	each(options, function(key, args) {
-		if (typeof self[key] == 'function' 
-				&& args !== undefined 
-				&& args !== null) {
+  var item_errors = new ItemValidationError(this, type)
+  , has_errors = false
+  , pending = value.length
 
-			try {
-				value = self[key](args, value, parent)
-			}catch(error){
-				if (error instanceof ItemValidationError) {
-					each(error.errors, function(error, index){
-						errors.add(index, error, key, args)
-					})
-				} else {
-					errors.add(null, error, key, args)
-				}
-				hasErrors = true
-			}
-			
-		} 
-	})
+  function next(errors) {
+    if (errors && errors.length > 0) {
+      has_errors = true
+      item_errors.add(i, errors)
+    }
+    if (--pending === 0) done(has_errors && item_errors, !has_errors)
+  }
 
-	return hasErrors
-		? {value: value, error: errors}
-		: {value: value}
-}
-
-
-
-ArrayType.prototype._cast = function(value, parent) {
-  if (value === null 
-   || value === undefined
-   || Array.isArray(value) 
-   || isArrayLike(value)) {
-   	if (parent) value.parent = parent
-  	return value
-	}
-
-	throw new TypeError('Value `' + value + '` is not an array')
+  for (var i = 0; i < value.length; i++) {
+    type.validate(value, next)
+  }
 }
 
 

@@ -1,28 +1,22 @@
-module.exports = NumberType
-var Schema = require('../schema')
-var type = require('type-component')
+var Schema = require('../lib/schema')
 
-function NumberType(options, parent, path){
-	Schema.call(this, options, parent, path)
+module.exports = Schema.extend()
+  .cast(number)
+  .rule('min', min)
+  .rule('max', max)
+
+function number(value) {
+  if (value === undefined ||
+      value === null ||
+      !isNaN((value = parseFloat(value))))
+    return value
+  else throw new TypeError('must be a valid number') 
 }
 
-NumberType.prototype = Object.create(Schema.prototype, {
-	constructor: {
-		value: NumberType
-	}
-})
-
-NumberType.prototype.name = 'Number'
-
-NumberType.prototype.min = function (min, value, parent) {
-	if (value < min) {
-		//console.log("ERROR IN ", this.path(), parent, this._parent)
-		throw new TypeError('must be greater than ' + min)
-	}
-	return value
+function min(value, min) {
+  if (value < min) throw new TypeError('must be greater than' + min)
 }
 
-NumberType.prototype._cast = function(value, parent){
-	if (value === undefined || value === null) return value
-	else return parseFloat(value)
+function max(value, max) {
+  if (value > max) throw new TypeError('must be less than ' + max)
 }

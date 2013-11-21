@@ -9,6 +9,7 @@
   "author": "Christopher Tarquini",
   "license": "MIT",
   "dependencies": {
-    "mpath": "~0.2.1"
+    "mpath": "~0.2.1",
+    "validator": "schematic/validator"
   }
 }
