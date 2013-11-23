@@ -2,7 +2,6 @@ var Schema = require('../lib/schema')
 var type = require('type-component')
 
 exports = module.exports = Schema.extend()
-exports
   .cast(date)
   .rule('before', nyi)
   .rule('after', nyi)

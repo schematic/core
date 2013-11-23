@@ -1,35 +1,34 @@
 module.exports = Embedded
-var Schema = require('../schema')
-var caster = require('../lib/caster').caster
-var validator = require('../lib/caster').validator
+var Schema = require('../lib/schema')
+  , exports = module.exports = Schema.extend(Embedded)
 
-function Embedded(options, parent, path, schema){
-	Schema.call(this, options, parent, path)
-	this.schema = schema
-	this.name = schema.name 
-		? schema.name
-		: schema.constructor && schema.constructor.name || this.name
+function Embedded(options, key, parent){
+  if (!this instanceof Embedded) 
+    return new Embedded(options,key, parent)
+  Schema.call(this, options, key, parent)
+  var schema = this.options.schema
+  this.name = schema.name 
+    ? schema.name
+    : schema.constructor && schema.constructor.name || this.name
 }
 
-Embedded.prototype = Object.create(Schema.prototype, {
-	constructor: {
-		value: Embedded
-	}
+exports.cast(function (value, parent, target) {
+  return schema(this).cast(value, parent, target)
 })
 
-Embedded.prototype.name = 'Embedded'
+exports.validate(function (value, options, strict, callback) {
+  var path = this.key
+  schema(this).validate(value, options, strict, function (errors, valid) {
+    if (errors) {
+      errors.path = this.key
+      errors.validator.path = path
+    }
+    callback(errors, valid)
+  })
+})
 
-Embedded.prototype._validate = function (value, parent, target) {
-	var result = this.schema._validate(value, parent, target)
-	// rewrite paths for errors
-	if (result.error) {
-		result.error.path = this._path
-		result.error.validator.path = this._path
-	}
-	return result
+function schema(self) {
+  var ret = self.options.schema
+  if (!ret) throw new TypeError('embedded type must have a schema')
+  return ret
 }
-
-Embedded.prototype._cast = function(value, parent, target){
-	return this.schema._cast(value, parent, target)
-}
-
