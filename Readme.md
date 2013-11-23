@@ -39,6 +39,11 @@ User.validate = UserSchema.validate.bind(UserSchema)
 // You can also use the short-hand method of creating a `schema` property instead of defining cast/validate functions
 User.schema = UserSchema
 
+// Don't want to dirty up your models with these properties? No problem! Just add a type-inferer middleware
+UserSchema.use(function (type, options) {
+  if (type === User) return UserSchema
+})
+
 // Now you can use your User model directly in schematic (and you can use any constructor you want, we just need a cast function)
 var BlogSchema = new Document({
   title: String,
