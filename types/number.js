@@ -1,8 +1,6 @@
 var Schema = require('../lib/schema')
 
 exports = module.exports = Schema.extend()
-
-exports
   .cast(number)
   .rule('min', min)
   .rule('max', max)

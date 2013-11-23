@@ -4,7 +4,7 @@ var assert = require('chai').assert
   , DocumentType = require('../types/document')
   , StringType = require('../types/string')
 
-describe.only('Document Type', function() {
+describe('Document Type', function() {
   var tc;
   before(function() {
     tc = TypeContainer()

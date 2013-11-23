@@ -3,7 +3,6 @@ var ItemCastError = require('../errors/items')
 var ItemValidationError = require('../errors/items-validation')
 
 exports = module.exports = Schema.extend()
-exports
   .cast(array)
   .rule('items', items)
 
