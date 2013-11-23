@@ -1,18 +1,20 @@
 var Schema = require('./')
 
 function Model(data, schema, parent){
+	// subclasses may optionally define the schema on the constructor
 	schema = schema
 		? schema
 		: this.constructor.schema
-
-
+  
+	data = schema.cast(data, parent)
 	for(var x in data)
 		if(data.hasOwnProperty(x))
 			this[x] = data[x]
 }
 
 Model.cast = function(obj, parent){
-
+	var ctor = this.constructor
+	var proto = this.constructor.prototype
 }
 
 function define(obj, prop, desc){
@@ -95,7 +97,7 @@ Profile.prototype = Object.create(Model.prototype, {
 	}
 })
 
-Profile.prototype.getAddress = function(){
+Profile.prototype.getAddress = function() {
 	return this.city + ', ' + this.zip
 }
 
