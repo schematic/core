@@ -10,6 +10,12 @@
   "license": "MIT",
   "dependencies": {
     "mpath": "~0.2.1",
-    "validator": "schematic/validator"
+    "validator": "schematic/validator",
+    "type-component": "0.0.1",
+    "ware": "~0.2.0"
+  },
+  "devDependencies": {
+    "mocha": "~1.14.0",
+    "chai": "~1.8.1"
   }
 }
