@@ -6,14 +6,15 @@
   "keywords": [],
   "dependencies": {
     "aheckmann/mpath": "*",
-    "type": "*",
     "component/type": "*",
-    "component/object": "*"
+    "component/object": "*",
+    "visionmedia/configurable.js": "*"
   },
   "development": {},
   "license": "MIT",
   "main": "index.js",
   "scripts": [
     "index.js"
-  ]
+  ],
+  "remotes": []
 }
