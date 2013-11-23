@@ -13,7 +13,7 @@ describe('Array Type', function() {
     it('should infer item type', function() {
       var type = tc.infer([String])
       assert.instanceOf(type, ArrayType, 'from array literal')
-      assert.strictEqual(type.options.items, String, 'item type')
+      assert.strictEqual(type.get('items'), String, 'item type')
     })
   })
 })

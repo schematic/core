@@ -8,8 +8,8 @@ exports = module.exports = Schema.extend()
 
 function array(value, parent) {
   if (value === null || value === undefined) return value;
-  var type = this.options.items
-    , parent_enabled = this.options.parent
+  var type = this.get('items')
+    , parent_enabled = this.get('item parent')
     , parent_key = typeof parent_enabled === 'string' ? parent_enabled : 'parent'
 
   if (Array.isArray(value) || isArrayLike(value)) {
