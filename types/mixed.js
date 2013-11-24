@@ -1,17 +1,7 @@
-module.exports = MixedType
-var Schema = require('../schema')
-var type = require('type-component')
+var Schema = require('../lib/schema')
 
-function MixedType(options, parent, path){
-	Schema.call(this, options, parent, path)
-}
-
-MixedType.prototype = Object.create(Schema.prototype, {
-	constructor: {
-		value: MixedType
-	}
-})
-
-MixedType.prototype._cast = function(value, parent){
-	return value
-}
+module.exports =
+Schema.extend()
+  .cast(function (value) {
+    return value
+  })

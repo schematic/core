@@ -17,6 +17,7 @@
   },
   "devDependencies": {
     "mocha": "~1.14.0",
-    "chai": "~1.8.1"
+    "chai": "~1.8.1",
+    "better-stack-traces": "~1.0.0"
   }
 }
