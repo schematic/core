@@ -8,4 +8,6 @@ components: component.json
 clean:
 	rm -fr build components template.js
 
-.PHONY: clean
+test:
+	@if [ "$(TERM)" == "dumb"  ]; then mocha -C ; else mocha -R spec; fi
+.PHONY: clean test
