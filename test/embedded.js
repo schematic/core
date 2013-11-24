@@ -29,6 +29,7 @@ describe('Embedded Type', function() {
     assert.strictEqual(Blog.attr('author').get('schema'), User, 'embedded schema type')
     assert.instanceOf(Blog.attr('title'), StringType, 'string type (not embedded)')
   })
+
   it('should embed cast functions', function() {
     var Cat = new Document({
       favourite_phrase: function(value) { // always meow!
