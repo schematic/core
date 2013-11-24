@@ -24,7 +24,6 @@ function string(value) {
 /*!
  * validation rules 
  */
-
 function maximum(value, min) {
   if (value && value.length < min) throw new TypeError('must be at least ' + min + ' characters')
 }
