@@ -5,6 +5,8 @@
 
 It's currently non-functioning and I'm in the middle of a major rewrite. A usable version should be up soon along. Ideally there'll be a way to use schematic schemas with `component/model`
 
+[![Build Status](https://travis-ci.org/schematic/schema.png)](https://travis-ci.org/schematic/schema)
+
 ## Installation
 
   Install with [component(1)](http://component.io):
