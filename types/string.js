@@ -15,10 +15,10 @@ exports
  * @return
  */
 function string(value) {
-	if (value === null || value === undefined || typeof value === 'string') return value
-	if (typeof value.toString == 'function')
-		return value.toString()
-	throw new TypeError('failed to cast string')
+  if (value === null || value === undefined || typeof value === 'string') return value
+  if (typeof value.toString == 'function')
+    return value.toString()
+  throw new TypeError('failed to cast string')
 }
 
 /*!
