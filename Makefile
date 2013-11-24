@@ -9,5 +9,5 @@ clean:
 	rm -fr build components template.js
 
 test:
-	@if [ "$(TERM)" == "dumb"  ]; then mocha -C ; else mocha -R spec; fi
+	@if [ "$(TERM)" == "dumb"  ]; then ./node_modules/.bin/mocha -C; else ./node_modules/.bin/mocha; fi
 .PHONY: clean test
