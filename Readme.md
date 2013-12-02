@@ -11,7 +11,7 @@ It's currently non-functioning and I'm in the middle of a major rewrite. A usabl
 
   Install with [component(1)](http://component.io):
 
-    $ component install ilsken/schema
+    $ component install schematic/schema
 
 ## API (Planned, not implemented)
 ```javascript
