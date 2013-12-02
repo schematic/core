@@ -98,7 +98,7 @@ Document.prototype.attr = function(path, obj) {
   if (obj === undefined)
     return mpath.get(path, this, 'tree')
   else {
-    var type = this.type.infer(obj, path.split('.').pop(), this)
+    var type = this.get('types').infer(obj, path.split('.').pop(), this)
     mpath.set(path, type, this, 'tree')
   }
   return this
