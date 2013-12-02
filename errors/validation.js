@@ -1,6 +1,4 @@
-var each = require('each-component')
-  , merge = require('object-component').merge
-  , ValidatorError = require('./validator')
+var ValidatorError = require('./validator')
   , exports = module.exports = ValidationError
 
 function ValidationError (schema, settings, error) {
@@ -19,14 +17,16 @@ function ValidationError (schema, settings, error) {
     value: validator
   })
 
-  each(validator, function(key, value){
-    Object.defineProperty(this, key, {
-      value: value,
-      writable: true,
-      configurable: true
-    })
-  })
-
+  Object
+    .keys(validator)
+    .forEach(function(key){
+      var value = validator[key]
+      Object.defineProperty(this, key, {
+        value: value,
+        writable: true,
+        configurable: true
+      })
+    }, this)
 }
 
 ValidationError.prototype = Object.create(Error.prototype, {
