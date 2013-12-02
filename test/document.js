@@ -3,13 +3,16 @@ var assert = require('chai').assert
   , TypeContainer = require('../lib/type-container')
   , DocumentType = require('../types/document')
   , StringType = require('../types/string')
+  , middleware = require('../lib/middleware').object
 
 describe('Document Type', function() {
   var tc;
   before(function() {
     tc = TypeContainer()
     tc.type('Document', DocumentType)
+    tc.use(middleware)
     DocumentType.type('String', StringType)
+    DocumentType.get('types').use(middleware)
   })
 
   it('should use own type container', function() {
