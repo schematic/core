@@ -12,8 +12,7 @@
     "mpath": "~0.2.1",
     "validator-schematic": "git://github.com/schematic/validator.git",
     "type-component": "0.0.1",
-    "ware": "~0.2.0",
-    "configurable": "0.0.1",
+    "configurable": "0.0.1"
   },
   "devDependencies": {
     "mocha": "~1.14.0",
