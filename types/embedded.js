@@ -6,7 +6,7 @@ function Embedded(settings, key, parent) {
   if (!(this instanceof Embedded))
     return new Embedded(settings,key, parent)
   Schema.call(this, settings, key, parent)
-  var schema = this.settings.schema
+  var schema = settings.schema
   this.name = schema.name
     ? schema.name
     : schema.constructor && schema.constructor.name || this.name

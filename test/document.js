@@ -8,12 +8,12 @@ describe('Document Type', function() {
   var tc;
   before(function() {
     tc = TypeContainer()
-    tc('Document', DocumentType)
+    tc.type('Document', DocumentType)
     DocumentType.type('String', StringType)
   })
 
   it('should use own type container', function() {
-    tc('Test', StringType)
+    tc.type('Test', StringType)
     try {
       var type = tc.infer({foo: {type: 'Test'}})
       assert.notInstanceOf(type.tree.foo, StringType, 'local type container')

@@ -7,19 +7,17 @@ var assert        = require('chai').assert
 describe('TestContainer', function() {
   before(function() {
     tc = TestContainer()
-    tc('Number', NumberType)
+    tc.type('Number', NumberType)
   })
 
   it('should register types by name', function() {
-    assert.strictEqual(tc('Number'), NumberType, 'type name registered')
-    assert.strictEqual(tc('number'), NumberType, 'lookup is case-insensitive')
-    assert.isObject(tc.Types, 'has a mongoose-style type map')
-    assert.strictEqual(tc.Types.Number, NumberType, 'type saved to map in type-case')
+    assert.strictEqual(tc.type('Number'), NumberType, 'type name registered')
+    assert.strictEqual(tc.type('number'), NumberType, 'lookup is case-insensitive')
   })
 
   describe('#infer', function() {
     before(function() {
-      tc('Number', NumberType)
+      tc.infer('Number', NumberType)
     })
 
     it('should infer type from constructor', function(){

@@ -4,13 +4,13 @@ var assert = require('chai').assert
   , Embedded = require('../types/embedded')
   , Document = require('../types/document')
   , StringType = require('../types/string')
-  , type = require('../lib/type-container.js')()
+  , types = require('../lib/type-container.js')()
 
 describe('Embedded Type', function() {
   before(function() {
-    type('Document', Document)
-    type('String', StringType)
-    type('Embedded', Embedded)
+    types.type('Document', Document)
+    types.type('String', StringType)
+    types.type('Embedded', Embedded)
 
     Document.type('String', StringType)
     Document.type('Embedded', Embedded)
