@@ -7,7 +7,7 @@ describe('Array Type', function() {
   var tc;
   before(function() {
     tc = TypeContainer()
-    tc('Array', ArrayType)
+    tc.type('Array', ArrayType)
   })
   describe('Type Inference', function() {
     it('should infer item type', function() {
