@@ -1,69 +1,29 @@
-module.exports = ModelType
 var Document = require('./document')
-var Schema = require('../schema')
-var merge  = require('object-component').merge
-var doc = Document.prototype
-function ModelType (options, parent, path) {
-	if (!(this instanceof ModelType)) return new ModelType(options, parent, path)
-	var options = options || {}
-		, obj = options.schema
-		, model = options.model
-		, name = options.name || model && model.name
-	
-	// allow models/documents instead of a schema tree
-	if (obj instanceof Document) {
-		merge(options, merge({}, obj.options))
-		parent = parent || obj._parent
-		path = path || obj._path
-		obj = merge({}, obj.tree)
-	}
+  , exports = module.exports = Document.extend()
 
-	options.schema = obj
-	options.name = undefined
-	options.model = undefined
-	Document.call(this, options, parent, path)
-	this.model = model || this.model
-	this.name = this.model && this.model.name
-		? this.model.name
-		: 'Model'
-}
-
-ModelType.prototype = Object.create(Document.prototype, {
-	constructor: {
-		value: ModelType
-	}
+exports.cast(function (value, parent, target) {
+  if (!target) {
+    target = Object.create(prototype(this.get('ctor')))
+  }
+  return Document.cast.call(this, value, parent, target)
 })
 
-ModelType.prototype.name = 'Model'
+exports.rule('ctor', function(value, ctor) {
+  var type = typeof ctor
+  if (null === type ||
+      undefined === type ||
+      ('function' === type && value instanceof ctor) ||
+      ('object' === type && ctor.isPrototypeOf(value)))
+        return;
+  else throw new TypeError('must be an instance of `' name(ctor) + '`')
+})
 
-ModelType.prototype._validate = function(object, parent, target) {
-	var schema = this
-	//console.log('casting object', object, this.model)
-	
-	// prevent infinite loops because castAs calls cast
-	if (target instanceof this.model) 
-		return doc._validate.call(this, object, parent, target)
-	else {
-		//return doc._cast.call(this, object, parent, target)
-		var ret = this.validateAs(this.model, object, parent, target)
-		return ret
-	}
+function prototype(ctor) {
+  return ctor.prototype || ctor
 }
 
-ModelType.prototype._cast = function (object, parent, target) {
-	var ret = doc._cast.call(this, object, parent, target)
-	if (ret && parent) {
-		ret.parent = parent
-	}
-	return ret
-}
-
-function castWith(schema){
-	return function(object, parent, target){
-		return schema.cast(object, parent, target)
-	}
-}
-
-function parent() {
-	return this.model.parent
+function name(ctor) {
+  return ctor.name
+      ? ctor.name
+      : ctor.constructor.name
 }
