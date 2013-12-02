@@ -14,8 +14,6 @@
     "type-component": "0.0.1",
     "ware": "~0.2.0",
     "configurable": "0.0.1",
-    "object-component": "0.0.3",
-    "each-component": "0.0.1"
   },
   "devDependencies": {
     "mocha": "~1.14.0",
