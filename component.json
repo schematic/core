@@ -8,7 +8,8 @@
     "aheckmann/mpath": "*",
     "component/type": "*",
     "component/object": "*",
-    "visionmedia/configurable.js": "*"
+    "visionmedia/configurable.js": "*",
+    "schematic/validator": "*"
   },
   "development": {},
   "license": "MIT",
