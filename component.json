@@ -21,8 +21,6 @@
     "lib/result.js",
     "lib/schema.js",
     "lib/type-container.js",
-    "lib/types",
-    "lib/types.js",
     "lib/utils.js",
     "errors/items-validation.js",
     "errors/items.js",

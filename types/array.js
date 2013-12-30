@@ -1,6 +1,6 @@
-var Schema = require('../lib/schema')
 var ItemCastError = require('../errors/items')
-var ItemValidationError = require('../errors/items-validation')
+var ItemValidationError = require('../errors/items-validation');
+var Schema = require('../lib/schema');
 
 exports = module.exports = Schema.extend()
   .cast(array)
