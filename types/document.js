@@ -1,5 +1,5 @@
 var Schema = require('../lib/schema')
-var type = require('type-component')
+var type = require('type')
 var mpath = require('mpath')
 var ValidationError = require('../errors/validation.js')
 
