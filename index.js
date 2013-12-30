@@ -6,5 +6,13 @@ Schema.type('Mixed', require('./types/mixed'));
 Schema.type('Array', require('./types/array'));
 Schema.type('Document', require('./types/document'));
 Schema.get('types').use(require('./lib/middleware'));
-module.exports = require('./types/document')
+
+Schema.String   = Schema.type('String');
+Schema.Number   = Schema.type('Number');
+Schema.Date     = Schema.type('Date');
+Schema.Mixed    = Schema.type('Mixed');
+Schema.Array    = Schema.type('Array');
+Schema.Document = Schema.type('Document');
+
+module.exports  = require('./types/document')
 
