@@ -15,7 +15,7 @@ exports.rule('ctor', function(value, ctor) {
       ('function' === type && value instanceof ctor) ||
       ('object' === type && ctor.isPrototypeOf(value)))
         return;
-  else throw new TypeError('must be an instance of `' name(ctor) + '`')
+  else throw new TypeError('must be an instance of `' + name(ctor) + '`')
 })
 
 function prototype(ctor) {
