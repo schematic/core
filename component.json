@@ -14,7 +14,28 @@
   "license": "MIT",
   "main": "index.js",
   "scripts": [
-    "index.js"
+    "index.js",
+    "lib/schema.js",
+    "lib/configurable.js",
+    "lib/middleware.js",
+    "lib/result.js",
+    "lib/schema.js",
+    "lib/type-container.js",
+    "lib/types",
+    "lib/types.js",
+    "lib/utils.js",
+    "errors/items-validation.js",
+    "errors/items.js",
+    "errors/validation.js",
+    "errors/validator.js",
+    "types/array.js",
+    "types/date.js",
+    "types/document.js",
+    "types/embedded.js",
+    "types/mixed.js",
+    "types/model.js",
+    "types/number.js",
+    "types/string.js"
   ],
   "remotes": []
 }
