@@ -24,7 +24,13 @@ describe('Document Type', function() {
       assert(true, 'local type container')
     }
   })
-
+  it("should cast child properties", function() {
+    var x = new DocumentType({schema: {foo: String}});
+    var y = x.cast({foo: 1});
+    assert.equal(typeof y.foo, 'string', 'must cast child properties');
+    assert.equal(y.foo, '1');
+    
+  })
   describe('Type Inference', function() {
     it('should infer schema', function() {
       var type = tc.infer({foo: String})

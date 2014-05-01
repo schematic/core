@@ -1,28 +1,26 @@
 var Schema = require('../lib/schema')
-var type = require('type')
+var type = require('type-component')
 var mpath = require('mpath')
-var ValidationError = require('../errors/validation.js')
-
+var ValidationError = require('validator-schematic/errors/validation.js')
+var registry = null;
 exports = module.exports = Schema.extend(Document)
 
 function Document(settings, key, parent) {
-  if (!(this instanceof Document)) return new Document(settings, key, parent)
-  // support shorthand `new Document({user: String})` if schema is not defined
-  if (!settings.hasOwnProperty('schema'))
-    settings = {schema: settings}
   Schema.call(this, settings, key, parent)
-  var schema = this.get('schema')
+  if (!this.settings.registry) {
+    // use default registry
+    this.settings.registry = registry || (registry = require('../index'));
+  }
+  var schema = this.settings.schema || {};
   this.set('schema', this.tree = {})
   this.add(schema)
 }
 
-Document.cast(function (object, parent, target) {
-  if (object === undefined || object === null) return object;
-  var target = target || {}
-    , errors = new ValidationError(this)
-    , has_errors = false
-    , schema = this.tree
-
+Document.prototype._cast = function (object, parent, target) {
+  target = target || (type(object) == 'object' ? object : {})
+  var errors = new ValidationError(this);
+  var has_errors = false;
+  var schema = this.tree;
   map(object, target, function(key, value) {
     try {
      return schema[key] ? schema[key].cast(value, target) : value
@@ -34,34 +32,28 @@ Document.cast(function (object, parent, target) {
 
   if (has_errors) throw errors
   else return target
-})
-
-Document.validate(function(document, settings, strict, callback) {
+}
+Document.prototype.__validate = Document.prototype._validate;
+Document.prototype._validate = function(document, settings, strict, callback) {
   var schema = this.tree
-  Schema.validate(document, settings, strict, function (errors) {
+  this.__validate(document, settings, strict,  function (errors) {
     if (errors && strict) {
       callback(errors, false)
     } else {
      validate_children(errors || new ValidationError(this), schema, document, settings, strict, callback) 
     }
   })
-})
+}
 
 function validate_children(errors, schema, document, settings, strict, callback) {
   var has_errors = false
     , pending = 0
     , cancelled = false
-    , keys = Object.keys(document)
-
-  for (var i = 0; i < keys[i] && !cancelled; i++, pending++) {
+    , keys = Object.keys(schema)
+  for (var i = 0; i < keys.length && !cancelled; i++, pending++) {
     var key = keys[i]
-      , value = value[key]
-
-    if (schema[key]) {
+      , value = document[key]
       validate(schema, key, value, settings, strict, done)
-    } else if (this.disabled('adhoc')) {
-      done(key, new TypeError('adhoc properties are not allowed on this document'))
-    }
   }
   // handle errors
   function done(key, error) {
@@ -98,7 +90,7 @@ Document.prototype.attr = function(path, obj) {
   if (obj === undefined)
     return mpath.get(path, this, 'tree')
   else {
-    var type = this.get('types').infer(obj, path.split('.').pop(), this)
+    var type = this.settings.registry.infer(obj, path.split('.').pop(), this)
     mpath.set(path, type, this, 'tree')
   }
   return this

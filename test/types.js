@@ -9,7 +9,6 @@ describe('TestContainer', function() {
     tc = TestContainer()
     tc.type('Number', NumberType)
   })
-
   it('should register types by name', function() {
     assert.strictEqual(tc.type('Number'), NumberType, 'type name registered')
     assert.strictEqual(tc.type('number'), NumberType, 'lookup is case-insensitive')

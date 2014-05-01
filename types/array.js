@@ -1,13 +1,20 @@
 var ItemCastError = require('../errors/items')
 var ItemValidationError = require('../errors/items-validation');
 var Schema = require('../lib/schema');
+var registry = null;
+exports = module.exports = Schema.extend(ArrayType)
 
-exports = module.exports = Schema.extend()
-  .cast(array)
-  .rule('items', items)
+function ArrayType(settings, key, parent) {
+  Schema.call(this, settings, key, parent);
+  this.rule('items', items);
+  if (!this.settings.registry) {
+    this.settings.registry = registry || (registry = require('../index'));
+  }
+  this.settings.items = this.settings.registry.infer(this.settings.items || 'mixed');
+}
 
+ArrayType.prototype._cast = array;
 function array(value, parent) {
-  if (value === null || value === undefined) return value;
   var type = this.get('items')
     , parent_enabled = this.get('item parent')
     , parent_key = typeof parent_enabled === 'string' ? parent_enabled : 'parent'
@@ -44,13 +51,12 @@ function items(value, type, done) {
     done()
     return
   }
-
   var item_errors = new ItemValidationError(this, type)
   , has_errors = false
   , pending = value.length
 
-  function next(errors) {
-    if (errors && errors.length > 0) {
+  function next(i, errors) {
+    if (errors && errors.errors.length > 0) {
       has_errors = true
       item_errors.add(i, errors)
     }
@@ -58,7 +64,7 @@ function items(value, type, done) {
   }
 
   for (var i = 0; i < value.length; i++) {
-    type.validate(value, next)
+    type.validate(value[i], next.bind(null, i))
   }
 }
 

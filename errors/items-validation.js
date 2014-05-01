@@ -1,21 +1,17 @@
-var ValidationError = require('./validation')
-  , ValidatorError = require('./validator')
+var ValidationError = require('validator-schematic/errors/validation')
+  , ValidatorError = require('validator-schematic/errors/validator')
   , exports = module.exports = ItemValidationError
 
-function ItemValidationError(schema, options) {
+function ItemValidationError(schema, settings) {
   Object.defineProperty(this, 'errors', {
-    value: [],
-    enumerable: true
-  })
-  Object.defineProperty(this, 'paths', {
     value: [],
     enumerable: true
   })
   Object.defineProperty(this, 'validator', {
     value: {
     schema: schema,
-    path: schema._path,
-    options: options || schema.options,
+    path: schema.key,
+    settings: settings || schema.settings,
   }
   })
 }
@@ -33,10 +29,13 @@ ItemValidationError.prototype.add = function (path, error, name, options, schema
   var validator = this.validator
     , schema = schema || validator.schema
     , options = options || validator.options
-  
-  error = error instanceof ValidationError || error instanceof ValidatorError
+  if (error instanceof ValidationError || error instanceof ValidatorError) {
+    this.errors[path] = error;
+  } else {
+    this.errors[path] = new ValidatorError(schema, name, options, error);
+  }
+  /*error = error instanceof ValidationError || error instanceof ValidatorError
     ? error
-    : new ValidatorError(schema, name, options, error);
-
+    : new ValidatorError(schema, name, options, error);*/
   this.errors[path] = error
 }

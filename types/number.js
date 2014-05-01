@@ -1,16 +1,19 @@
 var Schema = require('../lib/schema')
 
-exports = module.exports = Schema.extend()
-  .cast(number)
-  .rule('min', min)
-  .rule('max', max)
+exports = module.exports = Schema.extend(NumberType);
 
-function number(value) {
-  if (value === undefined ||
-      value === null ||
-      !isNaN((value = parseFloat(value))))
+function NumberType(settings, key, parent) {
+  Schema.call(this, settings, key, parent);
+  this.rules({
+    min: min,
+    max: max
+  });
+}
+
+exports.prototype._cast = function cast(value) {
+  if(!isNaN((value = parseFloat(value))))
     return value
-  else throw new TypeError('must be a valid number') 
+  else throw new TypeError('must be a valid number')
 }
 
 function min(value, min) {

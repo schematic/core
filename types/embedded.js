@@ -3,8 +3,6 @@ var Schema = require('../lib/schema')
   , exports = module.exports = Schema.extend(Embedded)
 
 function Embedded(settings, key, parent) {
-  if (!(this instanceof Embedded))
-    return new Embedded(settings,key, parent)
   Schema.call(this, settings, key, parent)
   var schema = settings.schema
   this.name = schema.name
@@ -12,26 +10,27 @@ function Embedded(settings, key, parent) {
     : schema.constructor && schema.constructor.name || this.name
 }
 
-exports.cast(function (value, parent, target) {
+exports.prototype._cast = function (value, parent, target) {
   try {
     return cast(this.get('schema'), value, parent, target)
   } catch (error) {
     error.path = this.key
-    error.validator.path = this.key
+    if (error.validator) error.validator.path = this.key;
     throw error
   } 
-})
+}
 
-exports.validate(function (value, settings, strict, callback) {
+exports.prototype._validate = function (value, settings, strict, callback) {
   var path = this.key
   validate(this.get('schema'), value, settings, strict, function (errors, valid) {
     if (errors) {
       errors.path = path
-      errors.validator.path = path
+      if (errors.vailidator)
+        errors.validator.path = path
     }
     callback(errors, valid)
   })
-})
+}
 
 function cast(schema, value, parent, target) {
   if (typeof schema.cast === 'function')  return schema.cast(value, parent, target)

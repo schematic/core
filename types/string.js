@@ -1,12 +1,17 @@
 var Schema = require('../lib/schema')
 
-exports = module.exports = Schema.extend()
+exports = module.exports = Schema.extend(StringType);
 
-exports
-  .cast(string)
-  .rule('min', minimum)
-  .rule('max', maximum)
-  .rule('enum', enumerable)
+function StringType(settings, key, parent) {
+  Schema.call(this, settings, key, parent);
+  this.rules({
+    min: minimum,
+    max: maximum,
+    'enum': enumerable
+  });
+}
+
+exports.prototype._cast = string;
 
 /**
  * String Caster
@@ -15,7 +20,7 @@ exports
  * @return
  */
 function string(value) {
-  if (value === null || value === undefined || typeof value === 'string') return value
+  if (typeof value === 'string') return value
   if (typeof value.toString == 'function')
     return value.toString()
   throw new TypeError('failed to cast string')
@@ -24,11 +29,11 @@ function string(value) {
 /*!
  * validation rules 
  */
-function maximum(value, min) {
+function minimum(value, min) {
   if (value && value.length < min) throw new TypeError('must be at least ' + min + ' characters')
 }
 
-function minimum(value, max) {
+function maximum(value, max) {
   if (value && value.length > max) throw new TypeError('must be below' + max + ' characters')
 }
 
