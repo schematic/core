@@ -1,4 +1,4 @@
 var Schema = require('../lib/schema')
 
-module.exports =
+exports = module.exports =
 Schema.extend();

@@ -9,7 +9,9 @@
     "component/type": "*",
     "component/object": "*",
     "visionmedia/configurable.js": "*",
-    "schematic/validator": "*"
+    "schematic/validator": "*",
+    "component/emitter": "*",
+    "camshaft/require-component": "~0.1.1"
   },
   "development": {},
   "license": "MIT",

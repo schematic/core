@@ -1,8 +1,9 @@
 var ItemCastError = require('../errors/items')
 var ItemValidationError = require('../errors/items-validation');
 var Schema = require('../lib/schema');
+var Mixed = require('./mixed');
 var registry = null;
-exports = module.exports = Schema.extend(ArrayType)
+exports = module.exports = Schema.extend(ArrayType).cast(array)
 
 function ArrayType(settings, key, parent) {
   Schema.call(this, settings, key, parent);
@@ -10,10 +11,20 @@ function ArrayType(settings, key, parent) {
   if (!this.settings.registry) {
     this.settings.registry = registry || (registry = require('../index'));
   }
-  this.settings.items = this.settings.registry.infer(this.settings.items || 'mixed');
+  this.settings.items.parentArray = this;
 }
 
-ArrayType.prototype._cast = array;
+ArrayType.plugin = function() {
+  return function array_plugin(types) {
+    types.on('infer', middleware);
+  }
+}
+
+function middleware(info, key, parent) {
+  if (!Array.isArray(info.type) || info.type.length > 1) return
+  info.set('items', this.create(info.type[0] || Mixed, key, parent));
+  info.type = ArrayType;
+}
 function array(value, parent) {
   var type = this.get('items')
     , parent_enabled = this.get('item parent')

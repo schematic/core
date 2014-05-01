@@ -10,13 +10,8 @@ types.define('Mixed', require('./types/mixed'));
 types.define('Array', require('./types/array'));
 types.define('Document', require('./types/document'));
 
-// register middleware
-var middleware = require('./lib/middleware');
-// Should we include the enum middleware by default?
-// Note: Caster middleware must come before object middleware
-['object', 'array'].forEach(function(id) {
-  types.use(middleware[id]);
-});
-
+types.use('array');
+types.use('document');
+//types.use('string');
 module.exports  = types;
 

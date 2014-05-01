@@ -1,6 +1,6 @@
 var Schema = require('../lib/schema')
 
-exports = module.exports = Schema.extend(StringType);
+exports = module.exports = Schema.extend(StringType).cast(cast);
 
 function StringType(settings, key, parent) {
   Schema.call(this, settings, key, parent);
@@ -10,20 +10,27 @@ function StringType(settings, key, parent) {
     'enum': enumerable
   });
 }
-
-exports.prototype._cast = string;
-
+StringType.plugin = function() {
+  return function (types) {
+    types.on('infer', middleware);
+  }
+}
 /**
  * String Caster
  *
  * @param value
  * @return
  */
-function string(value) {
+function cast(value) {
   if (typeof value === 'string') return value
   if (typeof value.toString == 'function')
     return value.toString()
   throw new TypeError('failed to cast string')
+}
+
+function middleware(info) {
+//  if (info.type === String) 
+ //   info.type = StringType;
 }
 
 /*!

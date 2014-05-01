@@ -1,9 +1,11 @@
 var Schema = require('../lib/schema')
 var type = require('type-component')
 var mpath = require('mpath')
-var ValidationError = require('validator-schematic/errors/validation.js')
+var isPlainObject = require('../lib/util').isPlainObject;
+var ValidationError = require('validator-schematic/errors/validation')
+var Mixed = require('./mixed');
 var registry = null;
-exports = module.exports = Schema.extend(Document)
+exports = module.exports = Schema.extend(Document).cast(cast)
 
 function Document(settings, key, parent) {
   Schema.call(this, settings, key, parent)
@@ -15,8 +17,26 @@ function Document(settings, key, parent) {
   this.set('schema', this.tree = {})
   this.add(schema)
 }
+Document.plugin = function() {
+  return function(types) {
+    types.on('infer', middleware);
+  }
+}
 
-Document.prototype._cast = function (object, parent, target) {
+function middleware(info) {
+  if (isPlainObject(info.type)) {
+    if (Object.keys(info).length > 0) {
+      if (!info.isExplicit()) {
+        info.set('schema', info.type);
+        info.set('registry', this);
+        info.type = Document;
+      }
+    } else {
+      info.type = Mixed;
+    }
+  }
+}
+function cast(object, parent, target) {
   target = target || (type(object) == 'object' ? object : {})
   var errors = new ValidationError(this);
   var has_errors = false;
@@ -90,7 +110,7 @@ Document.prototype.attr = function(path, obj) {
   if (obj === undefined)
     return mpath.get(path, this, 'tree')
   else {
-    var type = this.settings.registry.infer(obj, path.split('.').pop(), this)
+    var type = this.settings.registry.create(obj, path.split('.').pop(), this)
     mpath.set(path, type, this, 'tree')
   }
   return this
@@ -110,7 +130,7 @@ function map(object, target, fn) {
      if (target) target[key] = value
   })
 }
-function cast(type, value, parent) {
+function cast_(type, value, parent) {
   if (type) return type.cast(value, parent)
   else return value
 }
