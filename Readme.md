@@ -3,20 +3,15 @@
 
 `schematic/schema` provides a light and modular component for casting and validating objects based on mongoose-esque schemas
 
-It's currently non-functioning and I'm in the middle of a major rewrite. A usable version should be up soon along. Ideally there'll be a way to use schematic schemas with `component/model`
+It's currently non-functioning and I'm in the middle of a major rewrite. A usable version should be up soon along.
 
 [![Build Status](https://travis-ci.org/schematic/schema.png)](https://travis-ci.org/schematic/schema)
 
-## Installation
-
-  Install with [component(1)](http://component.io):
-
-    $ component install schematic/schema
 
 ## API (Planned, not implemented)
 ```javascript
-var schematic = require('schematic')
-var model = require('schematic/model') // model helper, not the type!
+var schematic = require('schematic-core')
+var model = require('schematic-core/model') // model helper, not the type!
 
 var UserSchema = {
   username: String,
