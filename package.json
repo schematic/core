@@ -1,8 +1,9 @@
 {
-  "name": "schema-ilsken",
+  "name": "schematic-core",
   "version": "0.0.0",
   "description": "",
   "main": "index.js",
+  "repo": "https://github.com/schematic/core.git",
   "scripts": {
     "test": "make test",
     "debugger": "node-dbgp index.js"
@@ -10,10 +11,8 @@
   "author": "Christopher Tarquini",
   "license": "MIT",
   "dependencies": {
-    "configurable": "0.0.1",
-    "emitter-component": "^1.1.1",
+    "configurable": "^0.0.1",
     "mpath": "~0.2.1",
-    "require-component": "^0.1.1",
     "type-component": "0.0.1",
     "validator-schematic": "git://github.com/schematic/validator.git"
   },
