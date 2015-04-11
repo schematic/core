@@ -7,9 +7,12 @@ exports = module.exports = Schema.extend(ArrayType).cast(array)
 
 function ArrayType(settings, key, parent) {
   Schema.call(this, settings, key, parent);
-  this.rule('items', items);
-  if (!this.settings.registry) {
-    this.settings.registry = registry || (registry = require('../index'));
+  this.rules({
+    required: required,
+    items: items
+  })
+  if (!this.settings.schematic) {
+    this.settings.schematic = schematic || (schematic = require('../index'));
   }
   this.settings.items.parentArray = this;
 }
@@ -20,8 +23,17 @@ ArrayType.plugin = function() {
   }
 }
 
+ArrayType.prototype.items = function(type) {
+  if(arguments.length === 0) return this.get('items');
+  else this.set('items', this.settings.schematic.create(type, this.key, this));
+}
+function required(value, enabled) {
+  if(enabled && (!!value || !Array.isArray(value) || !isArrayLike(value)))
+    throw new TypeError('is required');
+}
 function middleware(info, key, parent) {
   if (!Array.isArray(info.type) || info.type.length > 1) return
+  if (!info.get('schematic')) info.set('schematic', this);
   info.set('items', this.create(info.type[0] || Mixed, key, parent));
   info.type = ArrayType;
 }

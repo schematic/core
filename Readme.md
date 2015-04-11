@@ -15,39 +15,42 @@ It's currently non-functioning and I'm in the middle of a major rewrite. A usabl
 
 ## API (Planned, not implemented)
 ```javascript
-var Document = require('schema/types').Document
+var schematic = require('schematic')
+var model = require('schematic/model') // model helper, not the type!
 
-var UserSchema = new Document({
+var UserSchema = {
   username: String,
   password: String,
-  age: {
-      type: Number,
-      min: 13
-  }
-})
+  age: {type: Number, min: 13}
+};
 
-var user = UserSchema.cast({username: 'foo', password: 'bar', age: '11' }) // returns {username: 'foo', password: 'bar', age: 11}
-UserSchema.validate(function(errors) {
-  console.log(errors.age) // TypeError: `age` must be greater than 13
-})
-
-// Models are not a part of schematic but you they're very easily to implement via the `cast(ctor, parent, target)` function
 function User(obj) {
-  UserSchema.cast(obj, null, this)
+  schema.cast(obj, null, this)
 }
-// You can even implement `cast` and `validate` functions so your models will work with your schemas as first class-citizens
-User.cast = UserSchema.cast.bind(UserSchema)
-User.validate = UserSchema.validate.bind(UserSchema)
-// You can also use the short-hand method of creating a `schema` property instead of defining cast/validate functions
-User.schema = UserSchema
+// Model methods are just normal methods on the prototype
+// Define your classes like you ussually do
+User.prototype.login = function (password) {
+  return password == this.password;
+}
 
-// Don't want to dirty up your models with these properties? No problem! Just add a type-inferer middleware
-UserSchema.use(function (type, options) {
-  if (type === User) return UserSchema
-})
+User.schema = model(User, UserSchema); // will add a `schema` property to `User`
 
-// Now you can use your User model directly in schematic (and you can use any constructor you want, we just need a cast function)
-var BlogSchema = new Document({
+
+// Adding a `schema` property is very special in schematic
+// This allows you to use your model directly in schematic with no special glue
+// No special construction methods required
+schematic.define('User', User);
+
+// To intrusive? no problem! Just define your model like so
+var UserType = model(User, UserSchema);
+schematic.define('User', UserType);
+// In order to make your class a first class citizen you will need some middleware
+schematic.on('infer', function (info) {
+  if (info.type == User) return UserType; // or 'User'/'user' since we defined it in schematic
+});
+
+// Your model is now a first class citizen
+var Blog = schematic.create({ // automatically creates a schema with the `Document` type
   title: String,
   body: String,
   author: User,
@@ -55,7 +58,10 @@ var BlogSchema = new Document({
     text: String,
     author: User
   }]
-})
+});
+
+blog.attr('author') == User.schema // true
+blog.attr('author').model == User // true
 
 // You can implment your find/save/delete functions on your model prototype.
 // Schematic leaves such matters to higher level libraries

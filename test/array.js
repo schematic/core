@@ -1,23 +1,23 @@
 /* global describe, it ,before */
 var assert = require('chai').assert
-  , types = require('../')
-  , ArrayType = types.get('array')
+  , schematic = require('../')
+  , ArrayType = schematic.type('array')
   , Mixed = require('../types/mixed')
 
 describe('Array Type', function() {
   it('should infer item type', function() {
-    var type = types.infer([String])
+    var type = schematic.create([String])
     assert.instanceOf(type, ArrayType, 'from array literal')
-    assert.instanceOf(type.get('items'), types.get('string'), 'item type')
+    assert.instanceOf(type.get('items'), schematic.type('string'), 'item type')
   })
   it('should use Mixed type for empty arrays', function () {
-    var type = types.infer([]);
+    var type = schematic.create([]);
     assert.instanceOf(type, ArrayType, 'from empty array');
     assert.instanceOf(type.get('items'), Mixed, 'mixed type');
   })
   it('should validate children', function(next) {
-    var type = types.infer([{type: String, min: 5}]);
-    assert.instanceOf(type.get('items'), types.get('string'))
+    var type = schematic.create([{type: String, min: 5}]);
+    assert.instanceOf(type.get('items'), schematic.type('string'))
     assert.equal(type.settings.items.settings.min, 5);
     type.validate(['foo'], function(errors) {
       try {

@@ -4,14 +4,14 @@ var mpath = require('mpath')
 var isPlainObject = require('../lib/util').isPlainObject;
 var ValidationError = require('validator-schematic/errors/validation')
 var Mixed = require('./mixed');
-var registry = null;
+var schematic = null;
 exports = module.exports = Schema.extend(Document).cast(cast)
 
 function Document(settings, key, parent) {
   Schema.call(this, settings, key, parent)
-  if (!this.settings.registry) {
+  if (!this.settings.schematic) {
     // use default registry
-    this.settings.registry = registry || (registry = require('../index'));
+    this.settings.schematic = schematic || (schematic = require('../index'));
   }
   var schema = this.settings.schema || {};
   this.set('schema', this.tree = {})
@@ -26,9 +26,9 @@ Document.plugin = function() {
 function middleware(info) {
   if (isPlainObject(info.type)) {
     if (Object.keys(info).length > 0) {
-      if (!info.isExplicit()) {
+      if (true || !info.isExplicit()) {
         info.set('schema', info.type);
-        info.set('registry', this);
+        if(!info.get('schematic')) info.set('schematic', this);
         info.type = Document;
       }
     } else {
@@ -110,7 +110,7 @@ Document.prototype.attr = function(path, obj) {
   if (obj === undefined)
     return mpath.get(path, this, 'tree')
   else {
-    var type = this.settings.registry.create(obj, path.split('.').pop(), this)
+    var type = this.settings.schematic.create(obj, path.split('.').pop(), this)
     mpath.set(path, type, this, 'tree')
   }
   return this
@@ -129,9 +129,5 @@ function map(object, target, fn) {
           : (cache[seen.push(object[key])] = fn(key, object[key]))
      if (target) target[key] = value
   })
-}
-function cast_(type, value, parent) {
-  if (type) return type.cast(value, parent)
-  else return value
 }
 

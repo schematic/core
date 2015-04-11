@@ -1,13 +1,13 @@
 var assert = require('chai').assert;
-var types = require('../');
-var string = types.get('string');
+var schematic = require('../');
+var string = schematic.type('string');
 
 describe('String', function() {
   it('should infer type', function(){
-    assert.instanceOf(types.infer(String), string);
+    assert.instanceOf(schematic.create(String), string);
   })
   describe("#cast(value)", function(){
-    it('should cast types to a string', function() {
+    it('should cast schematic to a string', function() {
       var schema = new string();
       var result = schema.cast(1);
       assert.equal(result, "1");

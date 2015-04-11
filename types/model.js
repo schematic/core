@@ -1,22 +1,24 @@
 var Document = require('./document')
-  , exports = module.exports = Document.extend()
+  , exports = module.exports = Document.extend(Model).cast(cast)
 
-exports.cast(function (value, parent, target) {
+function Model(settings, key, parent) {
+  Document.call(this, settings, key, parent);
+  this.rule('model', model);
+}
+
+function cast(value, parent, target) {
   if (!target) {
-    target = Object.create(prototype(this.get('ctor')))
+    target = Object.create(this.get('model').prototype);
   }
   return Document.cast.call(this, value, parent, target)
-})
+}
 
-exports.rule('ctor', function(value, ctor) {
+function model(value, ctor) {
   var type = typeof ctor
-  if (null === type ||
-      undefined === type ||
-      ('function' === type && value instanceof ctor) ||
-      ('object' === type && ctor.isPrototypeOf(value)))
+  if ('function' === type && value instanceof ctor)
         return;
   else throw new TypeError('must be an instance of `' + name(ctor) + '`')
-})
+}
 
 function prototype(ctor) {
   return ctor.prototype || ctor

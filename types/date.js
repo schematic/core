@@ -5,29 +5,47 @@ exports = module.exports = Schema.extend(DateType)
 
 function DateType(settings, key, parent) {
   Schema.call(this, settings, key, parent);
+  
   this.rules({
-    before: nyi,
-    after: nyi
+    required: required,
+    before: before,
+    after: after,
   });
 }
 
+DateType.plugin = function () {
+  return function (info) {
+    if (info.type == 'Date') return DateType;
+  }
+}
 exports.prototype._cast = date;
 
-function nyi() {
-  throw new Error('not yet implemented')
+function required(value, enabled) {
+  if (enabled && !(value instanceof Date))
+      throw new TypeError('is required');
 }
+function before(value, date) {
+  if (value !== null && value !== undefined && date && +value > +date)
+    throw new TypeError('must be before `' + String(date) + '`');
+}
+function after(value, date) {
+  if (value !== null && value !== undefined && date && +value < +date)
+    throw new TypeError('must be after `' + String(date) + '`');
+}
+
 
 function date(value) {
   var value_type = type(value)
     , ret = false
 
-	if (value === '' ||
-      value_type == 'date')
+  if (value_type == 'date')
     return value
 
+  if (value === '') return null;
   // support for timestamps
-  if (value_type == 'number' || String(value) == Number(value))
-    ret = new Date(Number(value));
+  var timestamp;
+  if (value_type == 'number' || String(value) == (timestamp = Number(value)))
+    ret = new Date(timestamp || value);
 
   // support for date strings
   else if (value.toString)

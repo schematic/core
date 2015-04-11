@@ -1,6 +1,6 @@
 
 build: components index.js
-	@component build --dev
+	browserify index.js -o build/build.js
 
 components: component.json
 	@component install --dev
@@ -10,4 +10,8 @@ clean:
 
 test:
 	@if [ "$(TERM)" == "dumb"  ]; then ./node_modules/.bin/mocha -C; else ./node_modules/.bin/mocha; fi
-.PHONY: clean test
+
+all: build test
+	@echo "♬   It's the latest revision \n♬   Hot and fresh out the kitchen  "
+
+.PHONY: clean test all
