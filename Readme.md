@@ -6,7 +6,8 @@
 It's currently non-functioning and I'm in the middle of a major rewrite. A usable version should be up soon along.
 
 [![Build Status](https://travis-ci.org/schematic/core.png)](https://travis-ci.org/schematic/core)
-
+[![Browser Support](https://ci.testling.com/schematic/core.png)
+](https://ci.testling.com/schematic/core)
 
 ## API (Planned, not implemented)
 ```javascript
