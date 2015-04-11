@@ -14,5 +14,7 @@ schematic.define('Document', require('./types/document'));
 schematic.use('array');
 // Middleware for parsing documents ({foo: String})
 schematic.use('document');
+
+schematic.Schematic = Schematic;
 module.exports  = schematic;
 
