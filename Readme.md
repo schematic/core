@@ -1,11 +1,11 @@
 
 # schema
 
-`schematic/schema` provides a light and modular component for casting and validating objects based on mongoose-esque schemas
+`schematic/core` provides a light and modular component for casting and validating objects based on mongoose-esque schemas
 
 It's currently non-functioning and I'm in the middle of a major rewrite. A usable version should be up soon along.
 
-[![Build Status](https://travis-ci.org/schematic/schema.png)](https://travis-ci.org/schematic/schema)
+[![Build Status](https://travis-ci.org/schematic/core.png)](https://travis-ci.org/schematic/core)
 
 
 ## API (Planned, not implemented)
