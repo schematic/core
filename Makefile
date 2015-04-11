@@ -1,9 +1,7 @@
 
-build: components index.js
+build: 
 	browserify index.js -o build/build.js
 
-components: component.json
-	@component install --dev
 
 clean:
 	rm -fr build components template.js
@@ -14,4 +12,4 @@ test:
 all: build test
 	@echo "♬   It's the latest revision \n♬   Hot and fresh out the kitchen  "
 
-.PHONY: clean test all
+.PHONY: clean test all build
