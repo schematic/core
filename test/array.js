@@ -7,6 +7,10 @@ var assert = require('chai').assert
 describe('Array Type', function() {
   it('should infer item type', function() {
     var type = schematic.create([String])
+
+  })
+  it('should infer item type via explicit definition', function () {
+    var type = schematic.create({type: [String]});
     assert.instanceOf(type, ArrayType, 'from array literal')
     assert.instanceOf(type.get('items'), schematic.type('string'), 'item type')
   })

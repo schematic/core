@@ -1,16 +1,13 @@
 var Schema = require('../lib/schema')
 
-exports = module.exports = Schema.extend(StringType).cast(cast);
+exports = module.exports =
+Schema
+  .extend()
+  .cast(cast)
+  .rules({min: minimum, max: maximum, 'enum': enumerable});
 
-function StringType(settings, key, parent) {
-  Schema.call(this, settings, key, parent);
-  this.rules({
-    min: minimum,
-    max: maximum,
-    'enum': enumerable
-  });
-}
-StringType.plugin = function() {
+
+exports.plugin = function() {
   return function (types) {
     types.on('infer', middleware);
   }
@@ -29,12 +26,12 @@ function cast(value) {
 }
 
 function middleware(info) {
-//  if (info.type === String) 
+//  if (info.type === String)
  //   info.type = StringType;
 }
 
 /*!
- * validation rules 
+ * validation rules
  */
 function minimum(value, min) {
   if (value && value.length < min) throw new TypeError('must be at least ' + min + ' characters')

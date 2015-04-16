@@ -1,11 +1,13 @@
 var Schema = require('../lib/schema')
 var type = require('type-component')
 var mpath = require('mpath')
-var isPlainObject = require('../lib/util').isPlainObject;
-var ValidationError = require('validator-schematic/errors/validation')
+var ValidationError = require('../errors/validation')
 var Mixed = require('./mixed');
 var schematic = null;
-exports = module.exports = Schema.extend(Document).cast(cast)
+exports = module.exports = Schema
+  .extend(Document)
+  .cast(cast)
+  .validate(validate)
 
 function Document(settings, key, parent) {
   Schema.call(this, settings, key, parent)
@@ -14,9 +16,13 @@ function Document(settings, key, parent) {
     this.settings.schematic = schematic || (schematic = require('../index'));
   }
   var schema = this.settings.schema || {};
-  this.set('schema', this.tree = {})
+  this.settings.schema = {};
   this.add(schema)
 }
+
+Object.defineProperty(Document.prototype, 'tree', {
+  get: function () { return this.settings.schema; }
+});
 Document.plugin = function() {
   return function(types) {
     types.on('infer', middleware);
@@ -25,20 +31,20 @@ Document.plugin = function() {
 
 function middleware(info) {
   if (isPlainObject(info.type)) {
-    if (Object.keys(info).length > 0) {
-      if (true || !info.isExplicit()) {
-        info.set('schema', info.type);
-        if(!info.get('schematic')) info.set('schematic', this);
-        info.type = Document;
-      }
-    } else {
+    if (isEmpty(info.type)) {
       info.type = Mixed;
+    } else {
+      info.settings.schema = info.type
+      info.type = Document;
+      if (!info.settings.schematic)
+        info.settings.schematic = this;
     }
+
   }
 }
 function cast(object, parent, target) {
   target = target || (type(object) == 'object' ? object : {})
-  var errors = new ValidationError(this);
+  var errors = new ValidationError();
   var has_errors = false;
   var schema = this.tree;
   map(object, target, function(key, value) {
@@ -53,27 +59,21 @@ function cast(object, parent, target) {
   if (has_errors) throw errors
   else return target
 }
-Document.prototype.__validate = Document.prototype._validate;
-Document.prototype._validate = function(document, settings, strict, callback) {
-  var schema = this.tree
-  this.__validate(document, settings, strict,  function (errors) {
-    if (errors && strict) {
-      callback(errors, false)
-    } else {
-     validate_children(errors || new ValidationError(this), schema, document, settings, strict, callback) 
-    }
-  })
-}
 
-function validate_children(errors, schema, document, settings, strict, callback) {
-  var has_errors = false
+function validate(document, settings, callback) {
+  var schema = settings.schema
+    , has_errors = false
     , pending = 0
     , cancelled = false
     , keys = Object.keys(schema)
-  for (var i = 0; i < keys.length && !cancelled; i++, pending++) {
+    , length = keys.length
+    , errors = new ValidationError(this)
+    , strict = false
+
+  for (var i = 0; i < length && !cancelled; i++, pending++) {
     var key = keys[i]
       , value = document[key]
-      validate(schema, key, value, settings, strict, done)
+      schema[key].validate(value, done.bind(null, key));
   }
   // handle errors
   function done(key, error) {
@@ -85,15 +85,12 @@ function validate_children(errors, schema, document, settings, strict, callback)
         cancelled = true
       }
     }
-    if (--pending === 0) callback(has_errors && errors, has_errors)
+    if (--pending === 0) {
+       callback(has_errors && errors, has_errors);
+    }
   }
 }
 
-function validate(schema, key, value, settings, strict, callback) {
-  schema[key].validate(value, function(error) {
-    callback(key, error)
-  })
-}
 
 Document.prototype.add = function(obj, prefix) {
   prefix = prefix || ''
@@ -107,7 +104,7 @@ Document.prototype.add = function(obj, prefix) {
 }
 
 Document.prototype.attr = function(path, obj) {
-  if (obj === undefined)
+  if (arguments.length == 1)
     return mpath.get(path, this, 'tree')
   else {
     var type = this.settings.schematic.create(obj, path.split('.').pop(), this)
@@ -124,10 +121,33 @@ function map(object, target, fn) {
   Object.keys(object)
   .forEach(function(key) {
     var index = seen.indexOf(object[key])
-      , value = index > -1 
-          ? cache[index] 
+      , value = index > -1
+          ? cache[index]
           : (cache[seen.push(object[key])] = fn(key, object[key]))
      if (target) target[key] = value
   })
 }
 
+/**
+ * isPlainObject
+ * Determines if an object is a plain object/hash/map
+ *
+ * @param {Mixed} obj
+ * @return {Boolean}
+ * @private
+ */
+function isPlainObject(obj) {
+  return type(obj) == 'object' && (!obj.constructor || obj.constructor === Object || obj.constructor.name === 'Object')
+}
+
+/**
+ * isEmpty
+ * Determines if an object contains no properties
+ *
+ * @param obj
+ * @return {Boolean}
+ * @private
+ */
+function isEmpty(obj) {
+  return Object.keys(obj).length === 0
+}

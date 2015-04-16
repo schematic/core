@@ -10,7 +10,19 @@ describe('Document Type', function() {
     var y = x.cast({foo: 1});
     assert.equal(typeof y.foo, 'string', 'must cast child properties');
     assert.equal(y.foo, '1');
-    
+
+  })
+  it('should validate children', function () {
+    var type = schematic.create({foo: {type: String, min: 5}});
+    assert.instanceOf(type.get('schema').foo, StringType);
+    assert.equal(type.get('schema').foo.get('min'), 5);
+
+    type.validate({foo: 'bar'}, function (errors) {
+      try {
+        assert.ok(errors);
+        next();
+      } catch (err) { next(err); }
+    })
   })
   describe('Type Inference', function() {
     it('should infer schema', function() {
@@ -24,6 +36,17 @@ describe('Document Type', function() {
       assert.instanceOf(type.tree.type, StringType)
     })
 
+    it('should allow explicit definition of schema', function () {
+      var type = schematic.create({foo : {type: DocumentType, schema: {bar: String } } });
+      assert.instanceOf(type.tree.foo, DocumentType);
+      assert.instanceOf(type.tree.foo.tree.bar, StringType);
+    })
+
+    it('should allow implicit schema definition via explicit type property', function() {
+      var type = schematic.create({ type: {foo: String}});
+      assert.instanceOf(type, DocumentType);
+      assert.instanceOf(type.tree.foo, StringType);
+    })
 
   })
 })

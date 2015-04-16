@@ -1,14 +1,15 @@
 var Document = require('./document')
-  , exports = module.exports = Document.extend(Model).cast(cast)
 
-function Model(settings, key, parent) {
-  Document.call(this, settings, key, parent);
-  this.rule('model', model);
-}
+exports = module.exports =
+Document
+  .extend(Model)
+  .cast(cast)
+  .rule('model', model)
+
 
 function cast(value, parent, target) {
   if (!target) {
-    target = Object.create(this.get('model').prototype);
+    target = Object.create(this.settings.model.prototype);
   }
   return Document.cast.call(this, value, parent, target)
 }

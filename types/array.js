@@ -1,16 +1,16 @@
-var ItemCastError = require('../errors/items')
-var ItemValidationError = require('../errors/items-validation');
+var ItemCastError = require('../errors/cast')
+var ValidationError = require('../errors/validation');
 var Schema = require('../lib/schema');
 var Mixed = require('./mixed');
 var registry = null;
-exports = module.exports = Schema.extend(ArrayType).cast(array)
+exports = module.exports =
+Schema
+  .extend(ArrayType)
+  .cast(cast)
+  .rules({required: required, items: items});
 
 function ArrayType(settings, key, parent) {
   Schema.call(this, settings, key, parent);
-  this.rules({
-    required: required,
-    items: items
-  })
   if (!this.settings.schematic) {
     this.settings.schematic = schematic || (schematic = require('../index'));
   }
@@ -37,7 +37,7 @@ function middleware(info, key, parent) {
   info.set('items', this.create(info.type[0] || Mixed, key, parent));
   info.type = ArrayType;
 }
-function array(value, parent) {
+function cast(value, parent) {
   var type = this.get('items')
     , parent_enabled = this.get('item parent')
     , parent_key = typeof parent_enabled === 'string' ? parent_enabled : 'parent'
@@ -74,7 +74,7 @@ function items(value, type, done) {
     done()
     return
   }
-  var item_errors = new ItemValidationError(this, type)
+  var item_errors = new ValidationError(this)
   , has_errors = false
   , pending = value.length
 

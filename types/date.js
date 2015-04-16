@@ -1,24 +1,20 @@
 var Schema = require('../lib/schema')
 var type = require('type-component')
 
-exports = module.exports = Schema.extend(DateType)
+exports = module.exports =
+Schema
+  .extend()
+  .cast(date)
+  .rules({required: required, before: before, after: after});
 
-function DateType(settings, key, parent) {
-  Schema.call(this, settings, key, parent);
-  
-  this.rules({
-    required: required,
-    before: before,
-    after: after,
-  });
-}
 
-DateType.plugin = function () {
+exports.plugin = function () {
   return function (info) {
-    if (info.type == 'Date') return DateType;
+    if (info.type == 'Date') return exports;
   }
 }
-exports.prototype._cast = date;
+
+//exports.prototype._cast = date;
 
 function required(value, enabled) {
   if (enabled && !(value instanceof Date))
