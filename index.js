@@ -12,6 +12,8 @@ schematic.define('Document', require('./types/document'));
 
 // Middleware for array literals ([String])
 schematic.use('array');
+schematic.use('string');
+schematic.use('date');
 // Middleware for parsing documents ({foo: String})
 schematic.use('document');
 
