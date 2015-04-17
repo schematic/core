@@ -32,6 +32,11 @@ deps: node_modules
 $(TARGET): deps $(SOURCES)
 	$(BROWSERIFY) --outfile=$(TARGET) $(FLAGS) ./
 
+# alias for make $(TARGET)
+# also makes it so we only run browserify
+# if the source files are modified
+build: $(TARGET)
+
 test: deps $(SOURCES) $(TESTFILES)
 	$(TESTRUNNER)  $(TESTFLAGS)
 
@@ -39,8 +44,6 @@ test-browser: deps $(SOURCES) $(TESTFILES)
 	$(TESTLING) $(TESTLINGFLAGS)
 
 test-all: test test-all
-
-build: $(TARGET)
 
 lint: $(SOURCES) $(TESTFILES)
 	jshint $(SOURCES) $(TESTFILES)
@@ -54,7 +57,7 @@ clean-deps:
 
 clean-all: clean clean-deps
 
-$(PUBLISHCOMMANDS): test-all
+$(PUBLISHCOMMANDS): lint build test-all
 	$(eval VERSION=$(subst publish-,,$@))
 	@echo Publishing $(VERSION) release to github and npm
 	npm version $(VERSION)
