@@ -1,7 +1,7 @@
 var Schema = require('../lib/schema')
 var type = require('type-component')
 
-exports = module.exports =
+var DateType = exports = module.exports =
 Schema
   .extend()
   .cast(date)
@@ -9,11 +9,15 @@ Schema
 
 
 exports.plugin = function () {
-  return function (info) {
-    if (info.type == 'Date') return exports;
+  return function (types) {
+    types.on('infer', middleware)
   }
 }
 
+function middleware(info) {
+  if (info.type === Date)
+    info.type = DateType
+}
 function required(value, enabled) {
   if (enabled && !(value instanceof Date))
       throw new TypeError('is required');

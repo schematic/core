@@ -1,18 +1,18 @@
 var Schema = require('../lib/schema')
-
-exports = module.exports =
+var StringType =
 Schema
   .extend()
   .cast(cast)
   .rules({min: minimum, max: maximum, 'enum': enumerable});
 
+exports = module.exports = StringType;
 
-/*
+
 exports.plugin = function() {
   return function (types) {
     types.on('infer', middleware);
   }
-}*/
+}
 
 /**
  * String Caster
@@ -26,11 +26,11 @@ function cast(value) {
     return value.toString()
   throw new TypeError('failed to cast string')
 }
-/*
+
 function middleware(info) {
-//  if (info.type === String)
- //   info.type = StringType;
-}*/
+  if (info.type === String)
+      info.type = StringType;
+}
 
 /*!
  * validation rules
