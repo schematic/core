@@ -1,11 +1,11 @@
 /* global describe, it ,before */
 var assert = require('chai').assert
-  , schematic = require('../index')
-  , StringType = schematic.type('string')
-  , DocumentType = schematic.type('document')
+var schematic = require('../index')
+var StringType = schematic.type('string')
+var DocumentType = schematic.type('document')
 
 describe('Document Type', function() {
-  it("should cast child properties", function() {
+  it('should cast child properties', function() {
     var x = new DocumentType({schema: {foo: String}});
     var y = x.cast({foo: 1});
     assert.equal(typeof y.foo, 'string', 'must cast child properties');
@@ -31,13 +31,13 @@ describe('Document Type', function() {
       assert.instanceOf(type.tree.foo, StringType, 'item type')
     })
 
-    it('should ignore explicit schematic with a `type` property', function(){
+    it('should ignore explicit schematic with a `type` property', function() {
       var type = schematic.create({type: {type: String}})
       assert.instanceOf(type.tree.type, StringType)
     })
 
     it('should allow explicit definition of schema', function () {
-      var type = schematic.create({foo : {type: DocumentType, schema: {bar: String } } });
+      var type = schematic.create({foo: {type: DocumentType, schema: {bar: String } } });
       assert.instanceOf(type.tree.foo, DocumentType);
       assert.instanceOf(type.tree.foo.tree.bar, StringType);
     })

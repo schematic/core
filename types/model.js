@@ -1,8 +1,9 @@
+/* jshint -W079, unused: false */
 var Document = require('./document')
 
 exports = module.exports =
 Document
-  .extend(Model)
+  .extend()
   .cast(cast)
   .rule('model', model)
 
@@ -20,6 +21,7 @@ function model(value, ctor) {
         return;
   else throw new TypeError('must be an instance of `' + name(ctor) + '`')
 }
+
 
 function prototype(ctor) {
   return ctor.prototype || ctor

@@ -2,7 +2,8 @@ var ItemCastError = require('../errors/cast')
 var ValidationError = require('../errors/validation');
 var Schema = require('../lib/schema');
 var Mixed = require('./mixed');
-var registry = null;
+var schematic = require('../');
+
 exports = module.exports =
 Schema
   .extend(ArrayType)
@@ -24,11 +25,11 @@ ArrayType.plugin = function() {
 }
 
 ArrayType.prototype.items = function(type) {
-  if(arguments.length === 0) return this.get('items');
+  if (arguments.length === 0) return this.get('items');
   else this.set('items', this.settings.schematic.create(type, this.key, this));
 }
 function required(value, enabled) {
-  if(enabled && (!!value || !Array.isArray(value) || !isArrayLike(value)))
+  if (enabled && (!!value || !Array.isArray(value) || !isArrayLike(value)))
     throw new TypeError('is required');
 }
 function middleware(info, key, parent) {
@@ -39,8 +40,10 @@ function middleware(info, key, parent) {
 }
 function cast(value, parent) {
   var type = this.get('items')
-    , parent_enabled = this.get('item parent')
-    , parent_key = typeof parent_enabled === 'string' ? parent_enabled : 'parent'
+  var parent_enabled = this.get('item parent')
+  var parent_key = typeof parent_enabled === 'string'
+    ? parent_enabled
+    : 'parent'
 
   if (Array.isArray(value) || isArrayLike(value)) {
     if (parent_enabled)
@@ -53,12 +56,12 @@ function cast(value, parent) {
 
 function cast_items(value, type) {
   var ret = []
-    , errors = []
+  var errors = []
 
   for (var i = 0; i < ret.length; i++) {
     try {
       ret[i] = type.cast(value[i], ret)
-    } catch(err) {
+    } catch (err) {
       errors[i] = err
     }
   }
@@ -75,8 +78,8 @@ function items(value, type, done) {
     return
   }
   var item_errors = new ValidationError(this)
-  , has_errors = false
-  , pending = value.length
+  var has_errors = false
+  var pending = value.length
 
   function next(i, errors) {
     if (errors && errors.errors.length > 0) {
@@ -93,13 +96,13 @@ function items(value, type, done) {
 
 
 function isArrayLike(o) {
-  if (o &&                                // o is not null, undefined, etc.
-      typeof o === "object" &&            // o is an object
-      isFinite(o.length) &&               // o.length is a finite number
-      o.length >= 0 &&                    // o.length is non-negative
-      o.length===Math.floor(o.length) &&  // o.length is an integer
-      o.length < 4294967296)              // o.length < 2^32
-      return true;                        // Then o is array-like
+  if (o &&                                  // o is not null, undefined, etc.
+      typeof o === 'object' &&              // o is an object
+      isFinite(o.length) &&                 // o.length is a finite number
+      o.length >= 0 &&                      // o.length is non-negative
+      o.length === Math.floor(o.length) &&  // o.length is an integer
+      o.length < 4294967296)                // o.length < 2^32
+      return true;                          // Then o is array-like
   else
-      return false;                       // Otherwise it is not
+      return false;                         // Otherwise it is not
 }

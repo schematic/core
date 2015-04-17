@@ -49,7 +49,7 @@ function cast(object, parent, target) {
   var schema = this.tree;
   map(object, target, function(key, value) {
     try {
-     return schema[key] ? schema[key].cast(value, target) : value
+      return schema[key] ? schema[key].cast(value, target) : value
     } catch (err) {
       errors.add(key, err)
       has_errors = true
@@ -62,18 +62,18 @@ function cast(object, parent, target) {
 
 function validate(document, settings, callback) {
   var schema = settings.schema
-    , has_errors = false
-    , pending = 0
-    , cancelled = false
-    , keys = Object.keys(schema)
-    , length = keys.length
-    , errors = new ValidationError(this)
-    , strict = false
+  var has_errors = false
+  var pending = 0
+  var cancelled = false
+  var keys = Object.keys(schema)
+  var length = keys.length
+  var errors = new ValidationError(this)
+  var strict = false
 
   for (var i = 0; i < length && !cancelled; i++, pending++) {
     var key = keys[i]
-      , value = document[key]
-      schema[key].validate(value, done.bind(null, key));
+    var value = document[key]
+    schema[key].validate(value, done.bind(null, key));
   }
   // handle errors
   function done(key, error) {
@@ -86,7 +86,7 @@ function validate(document, settings, callback) {
       }
     }
     if (--pending === 0) {
-       callback(has_errors && errors, has_errors);
+      callback(has_errors && errors, has_errors);
     }
   }
 }
@@ -117,14 +117,15 @@ Document.prototype.attr = function(path, obj) {
 function map(object, target, fn) {
   if (type(object) !== 'object') throw new TypeError('must be an object')
   var seen = []
-    , cache = []
+  var cache = []
   Object.keys(object)
   .forEach(function(key) {
     var index = seen.indexOf(object[key])
-      , value = index > -1
+    var value = index > -1
           ? cache[index]
           : (cache[seen.push(object[key])] = fn(key, object[key]))
-     if (target) target[key] = value
+    if (target)
+      target[key] = value
   })
 }
 

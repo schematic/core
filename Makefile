@@ -1,15 +1,66 @@
+TARGET ?= ./build/schematic.js
+BIN := ./node_modules/.bin
+BROWSERIFY ?= $(BIN)/browserify
+SOURCES := index.js $(wildcard ./lib/*.js) $(wildcard ./types/*.js) $(wildcard ./errors/*.js)
+TESTRUNNER ?= $(BIN)/mocha
+TESTLING ?= $(BIN)/testling
+REPORTER ?= dot
+TESTFILES := $(wildcard ./test/*.js)
+PUBLISHMODES := major minor patch premajor preminor prepatch prelease
+PUBLISHCOMMANDS := $(addprefix publish-, $(PUBLISHMODES))
+NODE_ENV ?= development
 
-build: 
-	browserify index.js -o build/build.js
+# special flags for mocha
+TESTFLAGS += --ui=bdd --require="better-stack-traces/register" --reporter=$(REPORTER)
+ifeq ($(TERM), dumb)
+	TESTFLAGS += --no-colors
+	REPORTER = dot
+endif
 
 
-clean:
-	rm -fr build components template.js
-
-test:
-	if [ "$(TERM)" == "dumb"  ]; then ./node_modules/.bin/mocha -C --ui bdd --require "better-stack-traces/register"; else ./node_modules/.bin/mocha --ui bdd --require "better-stack-traces/register"; fi
 
 all: build test
-	@echo "♬   It's the latest revision \n♬   Hot and fresh out the kitchen  "
+	@echo "♬   It's the latest revision \n♬   Hot and fresh out the kitchen"
 
-.PHONY: clean test all build
+# prevents npm install from running unless package.json has been modified
+node_modules: package.json
+	npm install $(NPMFLAGS)
+
+# just an alias for node_modules
+deps: node_modules
+
+$(TARGET): deps $(SOURCES)
+	$(BROWSERIFY) --outfile=$(TARGET) $(FLAGS) ./
+
+test: deps $(SOURCES) $(TESTFILES)
+	$(TESTRUNNER)  $(TESTFLAGS)
+
+test-browser: deps $(SOURCES) $(TESTFILES)
+	$(TESTLING) $(TESTLINGFLAGS)
+
+test-all: test test-all
+
+build: $(TARGET)
+
+lint: $(SOURCES) $(TESTFILES)
+	jshint $(SOURCES) $(TESTFILES)
+	jscs $(SOURCES) $(TESTFILES)
+
+clean:
+	rm $(TARGET)
+
+clean-deps:
+	rm -rf ./node_modules
+
+clean-all: clean clean-deps
+
+$(PUBLISHCOMMANDS): test-all
+	$(eval VERSION=$(subst publish-,,$@))
+	@echo Publishing $(VERSION) release to github and npm
+	npm version $(VERSION)
+	git push origin master
+	@#npm publish
+
+
+
+.PHONY: clean clean-deps clean-all test test-all test-browser all build example deps $(PUBLISHCOMMANDS)

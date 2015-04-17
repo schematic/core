@@ -14,8 +14,6 @@ exports.plugin = function () {
   }
 }
 
-//exports.prototype._cast = date;
-
 function required(value, enabled) {
   if (enabled && !(value instanceof Date))
       throw new TypeError('is required');
@@ -32,7 +30,7 @@ function after(value, date) {
 
 function date(value) {
   var value_type = type(value)
-    , ret = false
+  var ret = false
 
   if (value_type == 'date')
     return value

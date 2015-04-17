@@ -1,8 +1,8 @@
 /* global describe, it ,before */
 var assert = require('chai').assert
-  , schematic = require('../')
-  , ArrayType = schematic.type('array')
-  , Mixed = require('../types/mixed')
+var schematic = require('../')
+var ArrayType = schematic.type('array')
+var Mixed = require('../types/mixed')
 
 describe('Array Type', function() {
   it('should infer item type', function() {

@@ -1,7 +1,6 @@
 /* global describe, it ,before */
 var assert = require('chai').assert
-  , schematic = require('../')
-  , Schema = require('../lib/schema')
+var Schema = require('../lib/schema')
 
 describe('Schema', function() {
   it('should set default options', function() {

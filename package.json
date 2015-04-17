@@ -3,10 +3,9 @@
   "version": "0.3.0",
   "description": "",
   "main": "index.js",
-  "repo": "https://github.com/schematic/core.git",
+  "repository": "https://github.com/schematic/core.git",
   "scripts": {
-    "test": "make test",
-    "debugger": "node-dbgp index.js"
+    "test": "make test"
   },
   "author": "Christopher Tarquini",
   "license": "MIT",
@@ -17,9 +16,12 @@
     "validator-schematic": "git://github.com/schematic/validator.git"
   },
   "devDependencies": {
-    "mocha": "^2.2.4",
+    "babelify": "^6.0.2",
+    "better-stack-traces": "^1.1.0",
+    "browserify": "^9.0.8",
     "chai": "^2.2.0",
-    "better-stack-traces": "^1.1.0"
+    "mocha": "^2.2.4",
+    "testling": "^1.7.1"
   },
   "testling": {
     "harness": "mocha-bdd",

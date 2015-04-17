@@ -1,8 +1,7 @@
 /* global describe, it ,before */
 var assert = require('chai').assert
-  , schematic = require('../')
-  , DateType = schematic.type('date')
-  , Mixed = require('../types/mixed')
+var schematic = require('../')
+var DateType = schematic.type('date')
 
 describe('Date Type', function() {
   var type;
@@ -10,7 +9,7 @@ describe('Date Type', function() {
   it('should infer type', function() {
     assert.instanceOf(type, DateType, 'from date ctor')
   })
-  it('should cast from a timestamp', function (){
+  it('should cast from a timestamp', function () {
     var ts = Date.now();
     assert.instanceOf(type.cast(ts), Date);
   });
@@ -20,17 +19,17 @@ describe('Date Type', function() {
   })
   it('should throw on invalid date', function () {
     var err = false;
-    try { type.cast('Foo Bar') } catch(e) { err = e; };
+    try { type.cast('Foo Bar') } catch (e) { err = e; }
     assert.ok(err, 'throw on invalid date');
   })
-  it('should validate required', function (done){
+  it('should validate required', function (done) {
     type.set('required', true);
     type.validate(null, function (err) {
       if (err) done();
       else done(new Error('required validator did not throw'))
     });
   })
-   it('should validate before', function (done) {
+  it('should validate before', function (done) {
     var date = new Date();
     date.setFullYear(date.getFullYear() - 1);
     type.set('before', date);
@@ -38,7 +37,7 @@ describe('Date Type', function() {
       if (err) done();
       else done(new Error('before did not throw'))
     });
-   });
+  });
   it('should validate after', function (done) {
     var date = new Date();
     date.setFullYear(date.getFullYear() + 1);

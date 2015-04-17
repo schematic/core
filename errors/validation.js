@@ -1,6 +1,6 @@
 var ValidationError = require('validator-schematic/errors/validation')
-  , ValidatorError = require('validator-schematic/errors/validator')
-  , exports = module.exports = SchemaValidationError
+var ValidatorError = require('validator-schematic/errors/validator')
+module.exports = SchemaValidationError
 
 function SchemaValidationError(schema, errors) {
   ValidationError.call(this, errors);
@@ -27,7 +27,10 @@ SchemaValidationError.prototype.add = function (path, error) {
 SchemaValidationError.prototype.toString = function() {
   var keys = Object.keys(this.errors);
   if (keys.length > 0) {
-    return ['[ Validation Error (', (this.schema.name || this.schema.constructor.name) ,'): \n',keys.map(function (key) {
+    return ['[ Validation Error (',
+            (this.schema.name || this.schema.constructor.name),
+            '): \n',
+            keys.map(function (key) {
       return [' ', this.errors[key].toString()].join('')
     }, this).join('\n'), ' ]'].join('')
   } else {
