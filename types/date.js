@@ -1,18 +1,20 @@
 var Schema = require('../lib/schema')
 var type = require('type-component')
 
-var DateType = exports = module.exports =
+var DateType = module.exports =
 Schema
   .extend()
   .cast(date)
   .rules({required: required, before: before, after: after});
 
+exports = module.exports
 
 exports.plugin = function () {
   return function (types) {
     types.on('infer', middleware)
   }
 }
+
 
 function middleware(info) {
   if (info.type === Date)

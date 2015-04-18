@@ -41,9 +41,8 @@ function middleware(info, key, parent) {
 function cast(value, parent) {
   var type = this.get('items')
   var parent_enabled = this.get('item parent')
-  var parent_key = typeof parent_enabled === 'string'
-    ? parent_enabled
-    : 'parent'
+  var parent_key = typeof parent_enabled === 'string' ? parent_enabled
+                                                      : 'parent'
 
   if (Array.isArray(value) || isArrayLike(value)) {
     if (parent_enabled)

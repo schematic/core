@@ -24,15 +24,13 @@ ItemCastError.prototype = Object.create(Error.prototype, {
 })
 
 function toTypeName (type) {
-  return type.name
-    ? type.name
-    : type.constructor.name
+  return type.name ? type.name
+                   : type.constructor.name
 }
 
 function keys (errors) {
-  var values = Array.isArray(errors)
-    ? errors.map(indices)
-    : object_keys(errors)
+  var values = Array.isArray(errors) ? errors.map(indices)
+                                     : object_keys(errors)
   return values.filter(defined)
 }
 
@@ -40,9 +38,8 @@ function object_keys (obj) {
   return Object
     .keys(obj)
     .map(function(key) {
-      return obj.hasOwnProperty(key) && defined(obj[key])
-        ? key
-        : undefined
+      return obj.hasOwnProperty(key) &&
+             defined(obj[key]) ? key : undefined
     })
 }
 

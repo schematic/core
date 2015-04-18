@@ -121,9 +121,8 @@ function map(object, target, fn) {
   Object.keys(object)
   .forEach(function(key) {
     var index = seen.indexOf(object[key])
-    var value = index > -1
-          ? cache[index]
-          : (cache[seen.push(object[key])] = fn(key, object[key]))
+    var value = index > -1 ? cache[index]
+                           : (cache[seen.push(object[key])] = fn(key, object[key]))
     if (target)
       target[key] = value
   })

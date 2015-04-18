@@ -28,7 +28,6 @@ function prototype(ctor) {
 }
 
 function name(ctor) {
-  return ctor.name
-      ? ctor.name
-      : ctor.constructor.name
+  return ctor.name ? ctor.name
+                   : ctor.constructor.name
 }
