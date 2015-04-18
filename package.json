@@ -10,6 +10,7 @@
   "author": "Christopher Tarquini",
   "license": "MIT",
   "dependencies": {
+    "clone": "^1.0.2",
     "configurable": "^0.0.1",
     "mpath": "~0.2.1",
     "type-component": "0.0.1",
