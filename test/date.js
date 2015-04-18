@@ -47,4 +47,23 @@ describe('Date Type', function() {
       else done(new Error('after did not throw'))
     });
   })
+  it('should allow default values', function () {
+    var now = new Date();
+    type.set('default', now);
+    var val = type.cast(null);
+    assert.equal(+now, +val)
+  })
+  it('should cast default values', function () {
+    var now = Date.now();
+    type.set('default', now)
+    var val = type.cast(null)
+    assert.instanceOf(val, Date)
+    assert.equal(+val, now)
+  })
+  it('should fail with bad default values', function () {
+    assert.throws(function () {
+      type.set('default', {})
+      type.cast(null)
+    })
+  })
 })
