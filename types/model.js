@@ -3,7 +3,7 @@ var Document = require('./document')
 
 exports = module.exports =
 Document
-  .extend()
+  .extend(null, 'Model')
   .cast(cast)
   .rule('model', model)
 

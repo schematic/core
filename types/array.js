@@ -1,4 +1,4 @@
-var ItemCastError = require('../errors/cast')
+var ItemCastError = require('../errors/item-cast')
 var ValidationError = require('../errors/validation');
 var Schema = require('../lib/schema');
 var Mixed = require('./mixed');
@@ -6,7 +6,7 @@ var schematic = require('../');
 
 exports = module.exports =
 Schema
-  .extend(ArrayType)
+  .extend(ArrayType, 'Array')
   .cast(cast)
   .rules({required: required, items: items});
 

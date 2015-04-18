@@ -2,7 +2,7 @@ var Schema = require('../lib/schema');
 
 exports = module.exports =
 Schema
-  .extend()
+  .extend(null, 'Number')
   .cast(cast)
   .rules({required: required, min: minimum, max: maximum})
 

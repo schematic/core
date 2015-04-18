@@ -2,6 +2,7 @@ var Schema = require('../lib/schema')
 var type = require('type-component')
 var mpath = require('mpath')
 var ValidationError = require('../errors/validation')
+var ItemCastError = require('../errors/item-cast.js')
 var Mixed = require('./mixed');
 var schematic = null;
 exports = module.exports = Schema
@@ -44,19 +45,19 @@ function middleware(info) {
 }
 function cast(object, parent, target) {
   target = target || (type(object) == 'object' ? object : {})
-  var errors = new ValidationError();
+  var errors = Object.create(null);
   var has_errors = false;
   var schema = this.tree;
   map(object, target, function(key, value) {
     try {
       return schema[key] ? schema[key].cast(value, target) : value
     } catch (err) {
-      errors.add(key, err)
+      errors[key] = err;
       has_errors = true
     }
   })
 
-  if (has_errors) throw errors
+  if (has_errors) throw new ItemCastError(this, errors)
   else return target
 }
 
@@ -65,7 +66,7 @@ function validate(document, settings, callback) {
   var has_errors = false
   var pending = 0
   var cancelled = false
-  var keys = Object.keys(schema)
+  var keys = this.keys()
   var length = keys.length
   var errors = new ValidationError(this)
   var strict = false
@@ -94,6 +95,8 @@ function validate(document, settings, callback) {
 
 Document.prototype.add = function(obj, prefix) {
   prefix = prefix || ''
+  if (prefix === '') this._key_cache = undefined;
+
   Object.keys(obj)
   .forEach(function(key) {
     if (!obj[key]) {
@@ -113,6 +116,9 @@ Document.prototype.attr = function(path, obj) {
   return this
 }
 
+Document.prototype.keys = function() {
+  return this._key_cache || (this._key_cache = Object.keys(this.settings.schema));
+}
 
 function map(object, target, fn) {
   if (type(object) !== 'object') throw new TypeError('must be an object')

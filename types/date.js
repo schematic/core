@@ -3,9 +3,10 @@ var type = require('type-component')
 
 var DateType = module.exports =
 Schema
-  .extend()
-  .cast(date)
-  .rules({required: required, before: before, after: after});
+  .extend(null, 'Date')
+  .cast(cast)
+  .check(check)
+  .rules({before: before, after: after});
 
 exports = module.exports
 
@@ -20,10 +21,7 @@ function middleware(info) {
   if (info.type === Date)
     info.type = DateType
 }
-function required(value, enabled) {
-  if (enabled && !(value instanceof Date))
-      throw new TypeError('is required');
-}
+
 function before(value, date) {
   if (value !== null && value !== undefined && date && +value > +date)
     throw new TypeError('must be before `' + String(date) + '`');
@@ -33,11 +31,13 @@ function after(value, date) {
     throw new TypeError('must be after `' + String(date) + '`');
 }
 
+function check(value) {
+  return type(value) === 'date'
+}
 
-function date(value) {
+function cast(value) {
   var value_type = type(value)
   var ret = false
-
   if (value_type == 'date')
     return value
 

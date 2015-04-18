@@ -1,7 +1,8 @@
 var Schema = require('../lib/schema')
 var StringType =
 Schema
-  .extend()
+  .extend('String')
+  .check(check)
   .cast(cast)
   .rules({min: minimum, max: maximum, 'enum': enumerable});
 
@@ -14,6 +15,9 @@ exports.plugin = function() {
   }
 }
 
+function check(value) {
+  return type(value) === 'string'
+}
 /**
  * String Caster
  *
