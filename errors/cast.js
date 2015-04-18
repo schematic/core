@@ -1,52 +1,40 @@
-module.exports = ItemCastError
+module.exports = CastError
 
-function ItemCastError(type, errors) {
-  Error.captureStackTrace(this, ItemCastError)
-  this.errors = errors
+function CastError(type, value, error) {
+  /*if (Error.captureStackTrace)
+    Error.captureStackTrace(this, this.constructor)*/
+  this.error = error
   this.type = type
-  this.message = [ toTypeName(type),
-                   ': Failed to cast items `',
-                   keys(errors),
-                   '` at `',
-                   type.path(),
-                   '`'
-                  ].join('')
+  this.value = value
+  this.stack = error.stack
+  var message = [type,
+                  ': Failed to cast value `',
+                  value,
+                  '`'
+                ];
+  var path = type.path();
+  if (path && path.length > 0) {
+    message.push(' at path `',
+                  type.path(),
+                  '`')
+  }
+
+  if (error)
+    message.push(' : ', error.toString())
+  this.message = message.join('');
 
 }
 
-ItemCastError.prototype = Object.create(Error.prototype, {
+CastError.prototype = Object.create(Error.prototype, {
   constructor: {
-    value: ItemCastError
+    value: CastError
   },
   name: {
-    value: 'ItemCastError'
+    value: 'CastError'
   }
 })
 
 function toTypeName (type) {
   return type.name ? type.name
                    : type.constructor.name
-}
-
-function keys (errors) {
-  var values = Array.isArray(errors) ? errors.map(indices)
-                                     : object_keys(errors)
-  return values.filter(defined)
-}
-
-function object_keys (obj) {
-  return Object
-    .keys(obj)
-    .map(function(key) {
-      return obj.hasOwnProperty(key) &&
-             defined(obj[key]) ? key : undefined
-    })
-}
-
-function indices(key, i, arr) {
-  return arr.hasOwnProperty(i) ? i : undefined
-}
-
-function defined(val) {
-  return val !== undefined && val !== null
 }
