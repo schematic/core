@@ -3,7 +3,6 @@ var assert = require('chai').assert
 var schematic = require('../index')
 var StringType = schematic.type('string')
 var DocumentType = schematic.type('document')
-
 describe('Document Type', function() {
   it('should cast child properties', function() {
     var x = new DocumentType({schema: {foo: String}});
