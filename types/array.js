@@ -8,7 +8,8 @@ exports = module.exports =
 Schema
   .extend(ArrayType, 'Array')
   .cast(cast)
-  .rules({required: required, items: items});
+  .check(check)
+  .rules({items: items});
 
 function ArrayType(settings, key, parent) {
   Schema.call(this, settings, key, parent);
@@ -28,9 +29,8 @@ ArrayType.prototype.items = function(type) {
   if (arguments.length === 0) return this.get('items');
   else this.set('items', this.settings.schematic.create(type, this.key, this));
 }
-function required(value, enabled) {
-  if (enabled && (!!value || !Array.isArray(value) || !isArrayLike(value)))
-    throw new TypeError('is required');
+function check(value) {
+  return (Array.isArray(value) || isArrayLike(value));
 }
 function middleware(info, key, parent) {
   if (!Array.isArray(info.type) || info.type.length > 1) return

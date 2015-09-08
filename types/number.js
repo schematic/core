@@ -4,12 +4,12 @@ exports = module.exports =
 Schema
   .extend(null, 'Number')
   .cast(cast)
-  .rules({required: required, min: minimum, max: maximum})
+  .check(check)
+  .rules({min: minimum, max: maximum})
 
 
-function required(value, enabled) {
-  if (enabled && (value === undefined || value === null || isNaN(value)))
-    throw new TypeError('is required');
+function check(value) {
+  return typeof(value) == 'number';
 }
 
 function cast(value) {
