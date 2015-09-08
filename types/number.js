@@ -9,7 +9,7 @@ Schema
 
 
 function check(value) {
-  return typeof(value) == 'number';
+  return typeof (value) == 'number';
 }
 
 function cast(value) {

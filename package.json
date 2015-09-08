@@ -12,6 +12,7 @@
   "dependencies": {
     "clone": "^1.0.2",
     "configurable": "^0.0.1",
+    "jshint": "^2.8.0",
     "mpath": "~0.2.1",
     "type-component": "0.0.1",
     "validator-schematic": "git://github.com/schematic/validator.git"
