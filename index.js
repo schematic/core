@@ -9,11 +9,14 @@ schematic.define('Date', require('./types/date'));
 schematic.define('Mixed', require('./types/mixed'));
 schematic.define('Array', require('./types/array'));
 schematic.define('Document', require('./types/document'));
+schematic.define('Boolean', require('./types/boolean'));
 
 // Middleware for array literals ([String])
 schematic.use('array');
 schematic.use('string');
 schematic.use('date');
+schematic.use('boolean');
+schematic.use('number')
 // Middleware for parsing documents ({foo: String})
 schematic.use('document');
 
