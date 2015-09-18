@@ -15,7 +15,7 @@ exports.plugin = function() {
 
 function middleware(info) {
   if (info.type === Number)
-    return exports;
+    info.type = exports;
 }
 
 function check(value) {
