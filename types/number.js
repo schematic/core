@@ -7,6 +7,16 @@ Schema
   .check(check)
   .rules({min: minimum, max: maximum})
 
+exports.plugin = function() {
+  return function (types) {
+    types.on('infer', middleware)
+  }
+}
+
+function middleware(info) {
+  if (info.type === Number)
+    return exports;
+}
 
 function check(value) {
   return typeof (value) == 'number';
