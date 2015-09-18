@@ -5,7 +5,7 @@ if pgrep -f "node `which node-inspector`"; then
   echo "node-inspector is running..."
 else
   echo "Starting node-inspector..."
-  if nohup node-inspector \&; then
+  if nohup node-inspector -p 8081 \&; then
     EXIT_CODE = $?
     echo "Failed to start node-inspector daemon. Exit Code: $EXIT_CODE"
     exit $EXIT_CODE
