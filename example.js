@@ -1,5 +1,4 @@
 var schematic = require('./');
-/*
 function User(obj) {
   if (!(this instanceof User)) return new User(obj);
   User.schema.cast(obj, null, this);
@@ -27,14 +26,8 @@ console.log(chris);
 console.log('Age: ', chris.age, '(', typeof chris.age, ')');
 console.log(chris.about());
 
-*/
-var idk = schematic.create([{type: String, min: 10}]);
-idk.validate(["x"], function (errors) {
-  console.log(errors,errors.toString());
-})
 
 
-/*
 User.schema.validate(chris, function (errors){
   console.log('errors: ',errors, errors && errors.toString());
-});*/
+});
