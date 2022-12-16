@@ -1,0 +1,4 @@
+projKey: you-are-lost
+contextLines: 5
+aliases: 
+  - type: pascalcase
